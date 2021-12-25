@@ -42,7 +42,7 @@ app.get('/api/inventory/:steamid', async (req, res) => {
                 condition_short = 'BS';            
             }
 
-            const blocked = description.tradable != 1;
+            const blocked = description.tradable != 1 ; 
 
             const item = {
                 name: description.name,
