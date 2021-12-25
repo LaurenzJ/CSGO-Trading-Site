@@ -1,0 +1,42 @@
+<template>
+  <div class="inventory flex flex-col w-screen md:space-y-4 pt-10">
+    <div class="overflow-auto px-2 md:px-6 h-screen pb-24 font-semibold">
+      <h1 class="text-3xl">User: {{ profile.username }}</h1>
+      <h1 class="text-6x1">Anzahl: {{ profile.inventory.length }}</h1>
+      <div class="grid md:grid-cols-10 grid-cols-2 gap-x-2 gap-y-2">
+        <div v-for="item in profile.inventory" :key="item.id">
+          <Item :name="item.name" :icon_url="item.icon_url" :condition_short="item.condition_short"></Item>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import InventoryService from '../InventoryService.js'
+import Item from '../components/Item.vue'
+
+export default {
+  name: 'Inventory',
+    components: {
+        Item
+    },
+  data() {
+    return {
+      profile: {
+        username: 'IchLebImAldi',
+        inventory: [],
+      },
+      error: ''
+    }
+  },
+  async created() {
+    try {
+        this.profile.inventory = await InventoryService.getItems(76561198164597175n);
+        console.log(this.profile)
+    } catch (error) {
+        this.error = error.message;
+    }
+  },
+}
+</script>

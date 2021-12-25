@@ -1,4 +1,4 @@
-# csgo_trading-site_v2
+# frontend
 
 ## Project setup
 ```
