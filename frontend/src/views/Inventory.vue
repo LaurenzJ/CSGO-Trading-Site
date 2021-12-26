@@ -3,9 +3,10 @@
     <div class="overflow-auto px-2 md:px-6 h-screen pb-24 font-semibold">
       <h1 class="text-3xl">User: {{ profile.username }}</h1>
       <h1 class="text-6x1">Anzahl: {{ profile.inventory.length }}</h1>
+      {{ profile.inventory[0].floatvalue }}
       <div class="grid md:grid-cols-10 grid-cols-2 gap-x-2 gap-y-2">
         <div v-for="item in profile.inventory" :key="item.id">
-          <Item :name="item.name" :icon_url="item.icon_url" :condition_short="item.condition_short"></Item>
+          <Item :name="item.name" :icon_url="item.icon_url" :condition_short="item.condition_short" :floatvalue="item.floatvalue"></Item>
         </div>
       </div>
     </div>
@@ -24,7 +25,7 @@ export default {
   data() {
     return {
       profile: {
-        username: 'IchLebImAldi',
+        username: '',
         inventory: [],
       },
       error: ''
@@ -38,5 +39,16 @@ export default {
         this.error = error.message;
     }
   },
+  async mounted(){
+    try {
+      // loop through all items and set floatvalue to outpute from InventoryService.getItemFloat(item)
+      for (let i = 0; i < this.profile.inventory.length; i++) {
+        this.profile.inventory[i].floatvalue = await InventoryService.getItemFloat(this.profile.inventory[i]);
+      }
+    } catch (error) {
+      console.log(error)
+      this.error = error.message;
+    }
+  }
 }
 </script>

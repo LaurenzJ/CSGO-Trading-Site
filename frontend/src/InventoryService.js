@@ -3,7 +3,7 @@ const axios = require('axios');
 class InventoryService {
     
     static async getItems(steamid) {
-        const url = `http://127.0.0.1:3000/api/inventory/${steamid}`;
+        const url = `http://192.168.178.66:3000/api/inventory/${steamid}`;
         console.log(url)
         return new Promise((resolve, reject) => {
             axios.get(url)
@@ -23,11 +23,25 @@ class InventoryService {
                 .then(response => {
                     resolve(response.data.response.steamid);
                 })
-                .catch(error => {
+                .catch(error => { 
                     reject(error);
                 });
         });
 
+    }
+
+    static async getItemFloat(item) {
+        console.log(item)
+        if(!item.inspectlink) return 0;
+        return new Promise((resolve, reject) => {
+            axios.get(`https://api.csgofloat.com/?url=${item.inspectlink}`)
+                .then(response => {
+                    resolve(response.data.iteminfo.floatvalue);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
     }
 
 }

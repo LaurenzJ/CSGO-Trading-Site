@@ -8,6 +8,7 @@ app.use(cors());
 
 // create api to get all items from inventory from steamid
 app.get('/api/inventory/:steamid', async (req, res) => {
+    console.log(req.params.steamid);
     try {
         const response = await axios.get(`https://steamcommunity.com/inventory/${req.params.steamid}/730/2?l=english&count=5000`);
         
@@ -19,6 +20,11 @@ app.get('/api/inventory/:steamid', async (req, res) => {
             const description = descriptions.find(x => x.classid == asset.classid && x.instanceid == asset.instanceid);
             if (!description) continue;
 
+            let inspectlink = ''
+            if(description.actions) {
+                const link = description.actions[0].link;
+                inspectlink = link.replace("%owner_steamid%", req.params.steamid).replace("%assetid%", asset.assetid)
+            }
             let condition = null;
             let condition_short = null;
             if (description.market_name.includes('(Factory New)')){
@@ -55,6 +61,7 @@ app.get('/api/inventory/:steamid', async (req, res) => {
                 tradable: description.tradable,
                 blocked: blocked,
                 icon_url: `https://steamcommunity-a.akamaihd.net/economy/image/${description.icon_url}`,
+                inspectlink: inspectlink,
             }
             items.push(item);
     }
