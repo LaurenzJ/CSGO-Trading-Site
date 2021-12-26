@@ -24,6 +24,7 @@ export default {
   },
   methods: {
     formatFloatvalue(value) {
+        if (value == 0) return 'No float'
         let val = value?.toFixed(4)
         return val?.toString()
     }

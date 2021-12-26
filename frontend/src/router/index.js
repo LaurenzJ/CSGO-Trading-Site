@@ -1,23 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+// import Home from '../views/Home.vue'
 import Inventory from '../views/Inventory.vue'
-import Settings from '../views/Settings.vue'
+// import Settings from '../views/Settings.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: () => import('../views/Home.vue')
   },
   {
     path: '/user/inventory',
     name: 'Inventory',
-    component: Inventory
+    component: Inventory // didnt work to import here --> params {steamid}
   },
   { 
     path: '/user/settings',
     name: 'Settings',
-    component: Settings
+    component: () => import('../views/Settings.vue')
   }
 ]
 

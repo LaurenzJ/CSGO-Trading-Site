@@ -8,7 +8,7 @@ class InventoryService {
         return new Promise((resolve, reject) => {
             axios.get(url)
                 .then(response => {
-                    resolve(response.data.filter(item => item.blocked == false)); 
+                    resolve(response.data.items.filter(item => item.blocked == false)); 
                 })
                 .catch(error => {
                     reject(error);
@@ -31,7 +31,6 @@ class InventoryService {
     }
 
     static async getItemFloat(item) {
-        console.log(item)
         if(!item.inspectlink) return 0;
         return new Promise((resolve, reject) => {
             axios.get(`https://api.csgofloat.com/?url=${item.inspectlink}`)

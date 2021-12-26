@@ -6,9 +6,9 @@
           Search 
       </h1>   
       <div class="pt-2 relative mx-auto text-gray-600">
-        <form action="/user/inventory" method="POST">
+        <form @submit="submit()">
           <input class="border-2 min-w-full border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-            type="profile_name_id" name="profile_name_id" placeholder="Profile Name / ID">
+            type="steamid" name="steamid" v-model="steamid" placeholder="Steam ID">
           <button type="submit" class="absolute right-0 top-0 mt-5 mr-4">
             <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
               xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
@@ -28,5 +28,15 @@
 
 export default {
   name: 'Home',
+  methods: {
+    submit() {
+      this.$router.push({
+        path: '/user/inventory', 
+        query: {
+          steamid: this.steamid
+        }
+      })
+    }
+  }
 }
 </script>

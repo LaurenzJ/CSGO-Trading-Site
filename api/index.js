@@ -10,7 +10,14 @@ app.use(cors());
 app.get('/api/inventory/:steamid', async (req, res) => {
     console.log(req.params.steamid);
     try {
-        const response = await axios.get(`https://steamcommunity.com/inventory/${req.params.steamid}/730/2?l=english&count=5000`);
+        let steamid = req.params.steamid;
+        if (steamid.search(/\d{17}/) != 0) {
+            console.log(process.env.API_KEY)
+            const response = await axios.get(`https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${process.env.API_KEY}&vanityurl=${steamid}`);
+            if (response.data.response.success != 1) return res.sendStatus(404);
+            steamid = response.data.response.steamid;
+        }
+        const response = await axios.get(`https://steamcommunity.com/inventory/${steamid}/730/2?l=english&count=5000`);
         
         const items = []
 
@@ -23,7 +30,7 @@ app.get('/api/inventory/:steamid', async (req, res) => {
             let inspectlink = ''
             if(description.actions) {
                 const link = description.actions[0].link;
-                inspectlink = link.replace("%owner_steamid%", req.params.steamid).replace("%assetid%", asset.assetid)
+                inspectlink = link.replace("%owner_steamid%", steamid).replace("%assetid%", asset.assetid)
             }
             let condition = null;
             let condition_short = null;
@@ -65,7 +72,12 @@ app.get('/api/inventory/:steamid', async (req, res) => {
             }
             items.push(item);
     }
-        res.send(items);
+
+        const json = {
+            'steamid': steamid,
+            'items': items
+        }
+        res.send(json);
     } catch (error) {
         console.log(error);
     }
