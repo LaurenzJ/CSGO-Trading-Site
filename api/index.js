@@ -12,7 +12,6 @@ app.get('/api/inventory/:steamid', async (req, res) => {
     try {
         let steamid = req.params.steamid;
         if (steamid.search(/\d{17}/) != 0) {
-            console.log(process.env.API_KEY)
             const response = await axios.get(`https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${process.env.API_KEY}&vanityurl=${steamid}`);
             if (response.data.response.success != 1) return res.sendStatus(404);
             steamid = response.data.response.steamid;
