@@ -3,6 +3,8 @@ const axios = require('axios');
 const path = require('path');
 const app = express();
 
+require('dotenv').config();
+
 const cors = require('cors');
 app.use(cors());
 
@@ -11,10 +13,15 @@ app.get('/api/inventory/:steamid', async (req, res) => {
     console.log(req.params.steamid);
     try {
         let steamid = req.params.steamid;
+        let username = ''
         if (steamid.search(/\d{17}/) != 0) {
+            username = steamid;
             const response = await axios.get(`https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${process.env.API_KEY}&vanityurl=${steamid}`);
             if (response.data.response.success != 1) return res.sendStatus(404);
             steamid = response.data.response.steamid;
+        } else {
+            const response = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${process.env.API_KEY}&steamids=${steamid}`);	
+            username = response.data.response.players[0].personaname;
         }
         const response = await axios.get(`https://steamcommunity.com/inventory/${steamid}/730/2?l=english&count=5000`);
         
@@ -74,9 +81,33 @@ app.get('/api/inventory/:steamid', async (req, res) => {
 
         const json = {
             'steamid': steamid,
+            'username': username,
             'items': items
         }
         res.send(json);
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+app.get('/api/userinfo/:steamid', async (req, res) => {
+    console.log(req.params.steamid);
+    try {
+        let steamid = req.params.steamid;
+        let username = ''
+        if (steamid.search(/\d{17}/) != 0) {
+            username = steamid;
+            const response = await axios.get(`https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${process.env.API_KEY}&vanityurl=${steamid}`);
+            if (response.data.response.success != 1) return res.sendStatus(404);
+            steamid = response.data.response.steamid;
+        } else {
+            const response = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${process.env.API_KEY}&steamids=${steamid}`);
+            username = response.data.response.players[0].personaname;
+        }
+        res.send({
+            'steamid': steamid,
+            'username': username
+        });
     } catch (error) {
         console.log(error);
     }

@@ -44,7 +44,9 @@ export default {
   },
   async created() {
     try {
-        this.profile.inventory = await InventoryService.getItems(this.$route.query.steamid? this.$route.query.steamid : 76561198333584311n); // if steamid is not set, it will load logged in user's inventory (replace 76561198333584311 with logged in stemaid)
+      const id = this.$route.query.steamid? this.$route.query.steamid : 76561198333584311n // if steamid is not set, it will load logged in user's inventory (replace 76561198333584311 with logged in stemaid)
+      this.profile.username = await InventoryService.getUsername(id)
+      this.profile.inventory = await InventoryService.getItems(id)
     } catch (error) {
         this.error = error.message;
     }

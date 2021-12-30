@@ -29,6 +29,11 @@ class InventoryService {
         });
 
     }
+    
+    static async getUsername(steamid) {
+        const response = await axios.get(`http://192.168.178.66:3000/api/userinfo/${steamid}`)
+        return response.data.username;
+    }
 
     static async getItemFloat(item) {
         if(!item.inspectlink) return 0;
