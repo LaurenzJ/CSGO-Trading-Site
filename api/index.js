@@ -10,21 +10,21 @@ app.use(cors());
 
 // create api to get all items from inventory from steamid
 app.get('/api/inventory/:steamid', async (req, res) => {
-    console.log(req.params.steamid);
     try {
         let steamid = req.params.steamid;
         let username = ''
-        if (steamid.search(/\d{17}/) != 0) {
+        if (steamid.search(/\d{17}/) != 0) { // steamid is custom url --> need to get real steamid
             username = steamid;
             const response = await axios.get(`https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${process.env.API_KEY}&vanityurl=${steamid}`);
             if (response.data.response.success != 1) return res.sendStatus(404);
+            
             steamid = response.data.response.steamid;
         } else {
-            const response = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${process.env.API_KEY}&steamids=${steamid}`);	
+            const response = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${process.env.API_KEY}&steamids=${steamid}`);
             username = response.data.response.players[0].personaname;
         }
         const response = await axios.get(`https://steamcommunity.com/inventory/${steamid}/730/2?l=english&count=5000`);
-        
+        console.log(steamid)
         const items = []
 
         const descriptions = response.data.descriptions.filter(x => x.marketable);
@@ -34,34 +34,30 @@ app.get('/api/inventory/:steamid', async (req, res) => {
             if (!description) continue;
 
             let inspectlink = ''
-            if(description.actions) {
+            if (description.actions) {
                 const link = description.actions[0].link;
                 inspectlink = link.replace("%owner_steamid%", steamid).replace("%assetid%", asset.assetid)
             }
             let condition = null;
             let condition_short = null;
-            if (description.market_name.includes('(Factory New)')){
+            if (description.market_name.includes('(Factory New)')) {
                 condition = 'Factory New'
                 condition_short = 'FN'
-            } 
-            else if (description.market_name.includes('(Minimal Wear)')) {
+            } else if (description.market_name.includes('(Minimal Wear)')) {
                 condition = 'Minimal Wear'
                 condition_short = 'MW';
-            }
-            else if (description.market_name.includes('(Field-Tested)')) {
+            } else if (description.market_name.includes('(Field-Tested)')) {
                 condition = 'Field-Tested'
                 condition_short = 'FT';
-            }
-            else if (description.market_name.includes('(Well-Worn)')) {
+            } else if (description.market_name.includes('(Well-Worn)')) {
                 condition = 'Well-Worn'
                 condition_short = 'WW';
-            }
-            else if (description.market_name.includes('(Battle-Scarred)')) {
+            } else if (description.market_name.includes('(Battle-Scarred)')) {
                 condition = 'Battle-Scarred'
-                condition_short = 'BS';            
+                condition_short = 'BS';
             }
 
-            const blocked = description.tradable != 1 ; 
+            const blocked = description.tradable != 1;
 
             const item = {
                 name: description.name,
@@ -77,7 +73,7 @@ app.get('/api/inventory/:steamid', async (req, res) => {
                 inspectlink: inspectlink,
             }
             items.push(item);
-    }
+        }
 
         const json = {
             'steamid': steamid,
@@ -91,7 +87,6 @@ app.get('/api/inventory/:steamid', async (req, res) => {
 });
 
 app.get('/api/userinfo/:steamid', async (req, res) => {
-    console.log(req.params.steamid);
     try {
         let steamid = req.params.steamid;
         let username = ''
@@ -112,7 +107,7 @@ app.get('/api/userinfo/:steamid', async (req, res) => {
         console.log(error);
     }
 });
-    
+
 app.listen(3000, () => {
     console.log('Server started on port 3000');
 });
