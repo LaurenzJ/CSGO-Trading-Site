@@ -5,6 +5,8 @@ class InventoryService {
     static OFFLINE_PORT = 4000
     static ONLINE_PORT = 3000
 
+    static isOnline = false // debug variable to switch between online and offline
+
     /**
      * 
      * @param {*} steamid 
@@ -12,7 +14,7 @@ class InventoryService {
      * @returns 
      */
     static async getItems(steamid, withBlocked=false) {
-        const url = `http://192.168.178.66:3000/api/inventory/${steamid}`;
+        const url = `http://192.168.178.66:${this.isOnline ? this.ONLINE_PORT : this.OFFLINE_PORT}/api/inventory/${steamid}`;
         console.log(url)
         return new Promise((resolve, reject) => {
             axios.get(url)
@@ -44,12 +46,13 @@ class InventoryService {
     }
 
     static async getUsername(steamid) {
-        const response = await axios.get(`http://192.168.178.66:3000/api/userinfo/${steamid}`)
+        const response = await axios.get(`http://192.168.178.66:${this.isOnline ? this.ONLINE_PORT : this.OFFLINE_PORT}/api/userinfo/${steamid}`)
         return response.data.username;
     }
 
     static async getItemFloat(item) {
-        // return 0;
+        if(!this.isOnline) return 0
+
         if (!item.inspectlink) return 0;
         return new Promise((resolve, reject) => {
             axios.get(`https://api.csgofloat.com/?url=${item.inspectlink}`)

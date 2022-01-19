@@ -102,6 +102,9 @@ app.get('/api/userinfo/:steamid', async (req, res) => {
             const response = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${process.env.API_KEY}&steamids=${steamid}`);
             username = response.data.response.players[0].personaname;
         }
+
+        // fs.writeFileSync('userinfo_request.json', JSON.stringify(steamid, null, 2)); // used to save request to work offline
+
         res.send({
             'steamid': steamid,
             'username': username
