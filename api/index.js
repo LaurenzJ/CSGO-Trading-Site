@@ -3,6 +3,8 @@ const axios = require('axios');
 const path = require('path');
 const app = express();
 
+const fs = require('fs') 
+
 require('dotenv').config();
 
 const cors = require('cors');
@@ -80,6 +82,7 @@ app.get('/api/inventory/:steamid', async (req, res) => {
             'username': username,
             'items': items
         }
+        // fs.writeFileSync('request.json', JSON.stringify(json, null, 2)); // used to save request to work offline
         res.send(json);
     } catch (error) {
         console.log(error);
