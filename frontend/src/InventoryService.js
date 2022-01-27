@@ -5,7 +5,7 @@ class InventoryService {
     static OFFLINE_PORT = 4000
     static ONLINE_PORT = 3000
 
-    static isOnline = false // debug variable to switch between online and offline
+    static isOnline = true // debug variable to switch between online and offline
 
     /**
      * 
@@ -14,7 +14,7 @@ class InventoryService {
      * @returns 
      */
     static async getItems(steamid, withBlocked=false) {
-        const url = `http://192.168.178.66:${this.isOnline ? this.ONLINE_PORT : this.OFFLINE_PORT}/api/inventory/${steamid}`;
+        const url = `http://localhost:${this.isOnline ? this.ONLINE_PORT : this.OFFLINE_PORT}/api/inventory/${steamid}`;
         console.log(url)
         return new Promise((resolve, reject) => {
             axios.get(url)
@@ -46,7 +46,7 @@ class InventoryService {
     }
 
     static async getUsername(steamid) {
-        const response = await axios.get(`http://192.168.178.66:${this.isOnline ? this.ONLINE_PORT : this.OFFLINE_PORT}/api/userinfo/${steamid}`)
+        const response = await axios.get(`http://localhost:${this.isOnline ? this.ONLINE_PORT : this.OFFLINE_PORT}/api/userinfo/${steamid}`)
         return response.data.username;
     }
 

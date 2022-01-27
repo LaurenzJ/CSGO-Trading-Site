@@ -12,6 +12,7 @@ app.use(cors());
 
 // create api to get all items from inventory from steamid
 app.get('/api/inventory/:steamid', async (req, res) => {
+    console.log("YEET")
     try {
         var rawData = fs.readFileSync('./inventory_request.json')
         var data = JSON.parse(rawData)

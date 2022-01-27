@@ -10,7 +10,8 @@
     "express": "^4.17.2"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "offline": "node offline_server.js"
   },
   "author": "",
   "license": "ISC"
