@@ -23,12 +23,7 @@
       <p class="hidden">{{ profile.inventory[0].floatvalue }}</p>
       <div class="grid md:grid-cols-10 grid-cols-2 gap-x-2 gap-y-2">
         <div v-for="item in filterByTerm" :key="item.id">
-          <Item
-            :name="item.name"
-            :icon_url="item.icon_url"
-            :condition_short="item.condition_short"
-            :floatvalue="item.floatvalue"
-          ></Item>
+          <Item :item="item" />
         </div>
       </div>
     </div>
@@ -76,8 +71,9 @@ export default {
     try {
       // loop through all items and set floatvalue to outpute from InventoryService.getItemFloat(item)
       for (let i = 0; i < this.profile.inventory.length; i++) {
-        this.profile.inventory[i].floatvalue =
-          await InventoryService.getItemFloat(this.profile.inventory[i]);
+        this.profile.inventory[i].floatvalue = await InventoryService.getItemFloat(
+          this.profile.inventory[i]
+        );
       }
     } catch (error) {
       console.log(error);

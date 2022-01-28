@@ -65,6 +65,21 @@ class InventoryService {
         });
     }
 
+    static async getItemInfo(item) {
+        if(!this.isOnline) return 0
+
+        if (!item.inspectlink) return 0;
+        return new Promise((resolve, reject) => {
+            axios.get(`https://api.csgofloat.com/?url=${item.inspectlink}`)
+                .then(response => {
+                    resolve(response.data.iteminfo);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
 }
 
 export default InventoryService;
